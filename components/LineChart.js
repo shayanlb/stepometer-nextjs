@@ -1,4 +1,3 @@
-// components/MyLineChart.tsx
 "use client";
 import {
   Chart as ChartJS,
@@ -33,6 +32,22 @@ const LineChart = ({ timestamps, data }) => {
               borderWidth: 2, // Optional: Set the line width
             },
           ],
+        }}
+        options={{
+          scales: {
+            x: {
+              title: {
+                display: true,
+                text: "Time", // Label for the x-axis
+              },
+            },
+            y: {
+              title: {
+                display: true,
+                text: "Value", // Label for the y-axis
+              },
+            },
+          },
         }}
       />
     </div>

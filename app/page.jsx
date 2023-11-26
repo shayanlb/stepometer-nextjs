@@ -15,7 +15,6 @@ import LineChart from "../components/LineChart";
 export default function Home() {
   const [stepometer, setStepometer] = useState(null);
   const [startDate, setStartDate] = useState(null);
-
   const [filterOption, setFilterOption] = useState("all");
   const [endDate, setEndDate] = useState(null);
 
@@ -113,7 +112,7 @@ export default function Home() {
   let pressure_left = [];
   let pressure_right = [];
   let status = [];
-
+  let pressure_difference = [];
   sortedStepometer?.forEach((user) => {
     timestamp.push(
       user.data.timestamp.toDate().toLocaleDateString("en-US", {
@@ -126,6 +125,13 @@ export default function Home() {
     status.push(user.data.status === "success" ? 1 : 0); // Convert status to 1 for success, 0 for fail
     pressure_right.push(user.data.pressure_right);
     pressure_left.push(user.data.pressure_left);
+
+    // Corrected pressure_difference calculation using ternary operator
+    pressure_difference.push(
+      user.data.pressure_right - user.data.pressure_left > 0
+        ? user.data.pressure_right - user.data.pressure_left
+        : user.data.pressure_left - user.data.pressure_right
+    );
   });
 
   const handleStartDateChange = (date) => {
@@ -213,6 +219,18 @@ export default function Home() {
             : "No matching data for the selected filter."}
         </div>
         <div className="flex flex-col gap-2">
+          <h2>Users Pressure Difference</h2>
+          {filteredStepometer
+            ? filteredStepometer.map((user, index) => (
+                <div key={index}>
+                  {user.data.pressure_right - user.data.pressure_left > 0
+                    ? user.data.pressure_right - user.data.pressure_left
+                    : user.data.pressure_left - user.data.pressure_right}
+                </div>
+              ))
+            : "No matching data for the selected filter."}
+        </div>
+        <div className="flex flex-col gap-2">
           <h2>Users Status</h2>
           {filteredStepometer
             ? filteredStepometer.map((user, index) => (
@@ -221,21 +239,27 @@ export default function Home() {
             : "No matching data for the selected filter."}
         </div>
       </div>
-      <div>
-        <h2>Steps</h2>
-        <LineChart timestamps={timestamp} data={step} />
-      </div>
-      <div>
-        <h2>status</h2>
-        <LineChart timestamps={timestamp} data={status} />
-      </div>
-      <div>
-        <h2>pressure_right</h2>
-        <LineChart timestamps={timestamp} data={pressure_right} />
-      </div>
-      <div>
-        <h2>pressure_left</h2>
-        <LineChart timestamps={timestamp} data={pressure_left} />
+      <div className="grid grid-cols-2 gap-2">
+        <div>
+          <h2>Steps</h2>
+          <LineChart timestamps={timestamp} data={step} />
+        </div>
+        <div>
+          <h2>status</h2>
+          <LineChart timestamps={timestamp} data={status} />
+        </div>
+        <div>
+          <h2>pressure_right</h2>
+          <LineChart timestamps={timestamp} data={pressure_right} />
+        </div>
+        <div>
+          <h2>pressure_left</h2>
+          <LineChart timestamps={timestamp} data={pressure_left} />
+        </div>
+        <div>
+          <h2>pressure_difference</h2>
+          <LineChart timestamps={timestamp} data={pressure_difference} />
+        </div>
       </div>
     </main>
   );
