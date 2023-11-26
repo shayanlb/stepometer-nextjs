@@ -68,6 +68,7 @@ export default function Home() {
       //   collection(db, "stepometer"),
       //   generateStepometerData()
       // );
+
       const querySnapshot = await getDocs(collection(db, "stepometer"));
       const userData = [];
 
@@ -141,12 +142,19 @@ export default function Home() {
   const handleEndDateChange = (date) => {
     setEndDate(date);
   };
+  const Heading = ({ children }) => {
+    return (
+      <h2 className="border-b-2 p-2">
+        <span>{children}</span>
+      </h2>
+    );
+  };
 
   return (
     <main className="p-3">
-      <div className="flex flex-row gap-5">
+      <div className="flex flex-col sm:flex-row gap-5">
         <div className="py-2">
-          <label htmlFor="startDatePicker" className="p-2">
+          <label htmlFor="startDatePicker" className="py-2">
             Start Date:
           </label>
           <DatePicker
@@ -154,12 +162,12 @@ export default function Home() {
             selected={startDate}
             onChange={handleStartDateChange}
             dateFormat="MM/dd/yyyy"
-            className="dark:bg-gray-700"
+            className="dark:bg-gray-700 mx-2"
           />
         </div>
 
         <div className="py-2">
-          <label htmlFor="endDatePicker" className="p-2">
+          <label htmlFor="endDatePicker" className="py-2">
             End Date:
           </label>
           <DatePicker
@@ -167,79 +175,11 @@ export default function Home() {
             selected={endDate}
             onChange={handleEndDateChange}
             dateFormat="MM/dd/yyyy"
-            className="dark:bg-gray-700"
+            className="dark:bg-gray-700 mx-2"
           />
         </div>
       </div>
-      <div className="flex flex-row gap-4 p-2 border">
-        <div className="flex flex-col gap-2">
-          <h2>Docs ID</h2>
-          {filteredStepometer
-            ? filteredStepometer.map((user, index) => (
-                <div key={index}>{user.id}</div>
-              ))
-            : "No matching data for the selected filter."}
-        </div>
-        <div className="flex flex-col gap-2">
-          <h2>Users Timestamp</h2>
-          {filteredStepometer
-            ? filteredStepometer.map((user, index) => (
-                <div key={index}>
-                  {user.data.timestamp.toDate().toLocaleDateString("en-US", {
-                    month: "short",
-                    day: "numeric",
-                    year: "numeric",
-                  })}
-                </div>
-              ))
-            : "No matching data for the selected filter."}
-        </div>
-        <div className="flex flex-col gap-2">
-          <h2>Users Step</h2>
-          {filteredStepometer
-            ? filteredStepometer.map((user, index) => (
-                <div key={index}>{user.data.steps}</div>
-              ))
-            : "No matching data for the selected filter."}
-        </div>
-        <div className="flex flex-col gap-2">
-          <h2>Users Pressure Left</h2>
-          {filteredStepometer
-            ? filteredStepometer.map((user, index) => (
-                <div key={index}>{user.data.pressure_left}</div>
-              ))
-            : "No matching data for the selected filter."}
-        </div>
-        <div className="flex flex-col gap-2">
-          <h2>Users Pressure Right</h2>
-          {filteredStepometer
-            ? filteredStepometer.map((user, index) => (
-                <div key={index}>{user.data.pressure_right}</div>
-              ))
-            : "No matching data for the selected filter."}
-        </div>
-        <div className="flex flex-col gap-2">
-          <h2>Users Pressure Difference</h2>
-          {filteredStepometer
-            ? filteredStepometer.map((user, index) => (
-                <div key={index}>
-                  {user.data.pressure_right - user.data.pressure_left > 0
-                    ? user.data.pressure_right - user.data.pressure_left
-                    : user.data.pressure_left - user.data.pressure_right}
-                </div>
-              ))
-            : "No matching data for the selected filter."}
-        </div>
-        <div className="flex flex-col gap-2">
-          <h2>Users Status</h2>
-          {filteredStepometer
-            ? filteredStepometer.map((user, index) => (
-                <div key={index}>{user.data.status}</div>
-              ))
-            : "No matching data for the selected filter."}
-        </div>
-      </div>
-      <div className="grid grid-cols-2 gap-2">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
         <div>
           <h2>Steps</h2>
           <LineChart timestamps={timestamp} data={step} />
@@ -259,6 +199,90 @@ export default function Home() {
         <div>
           <h2>pressure_difference</h2>
           <LineChart timestamps={timestamp} data={pressure_difference} />
+        </div>
+      </div>
+      <h1>Table</h1>
+      <div className="flex flex-row border text-sm justify-between">
+        <div className="sm:flex flex-col gap-2 hidden">
+          <Heading>Docs IDs</Heading>
+
+          {filteredStepometer
+            ? filteredStepometer.map((user, index) => (
+                <div key={index} className="text-center">
+                  {user.id}
+                </div>
+              ))
+            : "No matching data for the selected filter."}
+        </div>
+        <div className="flex flex-col gap-2">
+          <Heading>Timestamp</Heading>
+
+          {filteredStepometer
+            ? filteredStepometer.map((user, index) => (
+                <div key={index} className="text-center">
+                  {user.data.timestamp.toDate().toLocaleDateString("en-US", {
+                    month: "short",
+                    day: "numeric",
+                    year: "numeric",
+                  })}
+                </div>
+              ))
+            : "No matching data for the selected filter."}
+        </div>
+        <div className="flex flex-col gap-2">
+          <Heading>Step</Heading>
+
+          {filteredStepometer
+            ? filteredStepometer.map((user, index) => (
+                <div key={index} className="text-center">
+                  {user.data.steps}
+                </div>
+              ))
+            : "No matching data for the selected filter."}
+        </div>
+        <div className="flex flex-col gap-2">
+          <Heading>Pressure Left</Heading>
+          {filteredStepometer
+            ? filteredStepometer.map((user, index) => (
+                <div key={index} className="text-center">
+                  {user.data.pressure_left}
+                </div>
+              ))
+            : "No matching data for the selected filter."}
+        </div>
+        <div className="flex flex-col gap-2">
+          <Heading>Pressure Right</Heading>
+          {filteredStepometer
+            ? filteredStepometer.map((user, index) => (
+                <div key={index} className="text-center">
+                  {user.data.pressure_right}
+                </div>
+              ))
+            : "No matching data for the selected filter."}
+        </div>
+        <div className="hidden sm:flex flex-col gap-2">
+          <Heading>Pressure Difference</Heading>
+
+          {filteredStepometer
+            ? filteredStepometer.map((user, index) => (
+                <div key={index} className="text-center">
+                  {user.data.pressure_right - user.data.pressure_left > 0
+                    ? user.data.pressure_right - user.data.pressure_left
+                    : user.data.pressure_left - user.data.pressure_right}
+                </div>
+              ))
+            : "No matching data for the selected filter."}
+        </div>
+
+        <div className="flex flex-col gap-2">
+          <Heading> Status</Heading>
+          {filteredStepometer
+            ? filteredStepometer.map((user, index) => (
+                <div key={index} className="text-center">
+                  {user.data.status}
+                </div>
+              ))
+            : "No matching data for the selected filter."}
         </div>
       </div>
     </main>
