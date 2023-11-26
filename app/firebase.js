@@ -1,7 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { doc, getFirestore, setDoc } from "firebase/firestore";
-// import { getDatabase, ref, onValue } from "firebase/database";
-import { collection, addDoc } from "firebase/firestore";
+import { getFirestore, collection, addDoc, getDocs } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAD-WedILd-Swa5a1DdcGFuWcCnALSFaII",
@@ -14,17 +12,33 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+export const db = getFirestore(app);
 
-const docRef = doc(collection(db, "stepometer"));
-export function WriteFBDB() {
-  const docData = {
-    pressure_left: 40,
-    pressure_right: 60,
-    status: "success",
-    steps: 9,
-    timestamp: 12345678,
-  };
-  setDoc(docRef, docData);
-  return <h1>hi</h1>;
+export async function WriteFBDB() {
+  try {
+    const docRef = await addDoc(collection(db, "users"), {
+      first: "Alan",
+      middle: "Mathison",
+      last: "Turing",
+      born: 1912,
+    });
+    console.log("Document written with ID: ", docRef.id);
+  } catch (e) {
+    console.error("Error adding document: ", e);
+  }
+}
+export async function ReadFBDB() {
+  try {
+    const querySnapshot = await getDocs(collection(db, "users"));
+    const userData = [];
+
+    querySnapshot.forEach((doc) => {
+      userData.push({ id: doc.id, data: doc.data() });
+    });
+
+    return userData;
+  } catch (e) {
+    console.error("Error reading documents: ", e);
+    throw e; // rethrow the error to handle it at a higher level if needed
+  }
 }
