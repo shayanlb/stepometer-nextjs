@@ -1,5 +1,6 @@
-import WriteFirebaseDB from "../components/WriteFirebaseDB";
+import { WriteFBDB } from "./firebase";
 export default function Home() {
-  WriteFirebaseDB();
-  return <main className=""></main>;
+  let man = WriteFBDB();
+
+  return <main className="">Hello {man}</main>;
 }
