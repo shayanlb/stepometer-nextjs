@@ -12,6 +12,8 @@ import {
   serverTimestamp,
 } from "firebase/firestore";
 import LineChart from "../components/LineChart";
+import generateStepometerData from "../components/generateStepometerData";
+
 export default function Home() {
   const [stepometer, setStepometer] = useState(null);
   const [startDate, setStartDate] = useState(null);
@@ -20,61 +22,28 @@ export default function Home() {
 
   useEffect(() => {
     async function GetStepometer() {
-      // const generateRandomNumber = (min, max) =>
-      //   Math.floor(Math.random() * (max - min + 1)) + min;
-
-      // const generateStep = () => generateRandomNumber(0, 12);
-
-      // const generatePressureLeft = (step) => {
-      //   if (step === 0) {
-      //     return generateRandomNumber(25, 35);
-      //   } else {
-      //     return generateRandomNumber(25, 35);
-      //   }
-      // };
-
-      // const generatePressureRight = (step, pressureLeft) => {
-      //   if (step === 0) {
-      //     return 0;
-      //   } else {
-      //     return 100 - pressureLeft;
-      //   }
-      // };
-
-      // const generateStatus = (step, pressureLeft, pressureRight) => {
-      //   if (step === 0) {
-      //     return pressureLeft === 0 && pressureRight === 0 ? "fail" : "success";
-      //   } else {
-      //     return "success";
-      //   }
-      // };
-
-      // const generateStepometerData = () => {
-      //   const step = generateStep();
-      //   const pressureLeft = generatePressureLeft(step);
-      //   const pressureRight = generatePressureRight(step, pressureLeft);
-      //   const status = generateStatus(step, pressureLeft, pressureRight);
-
-      //   return {
-      //     pressure_left: pressureLeft,
-      //     pressure_right: pressureRight,
-      //     timestamp: serverTimestamp(), // Replace normal_timestamp with the actual timestamp logic
-      //     steps: step,
-      //     status: status,
-      //   };
-      // };
-
-      // const docRef = await addDoc(
-      //   collection(db, "stepometer"),
-      //   generateStepometerData()
-      // );
+      // for (let index = 0; index < 50; index++) {
+      //   let time_difference = { seconds: 10 + index * 10, day: 12 }; // 10, 11, 12
+      //   let data = generateStepometerData(0, 10, 26, 34, time_difference);
+      //   const docRef = await addDoc(
+      //     collection(db, "stepometer_abnormal_left"),
+      //     data
+      //   );
+      // }
 
       const querySnapshot = await getDocs(collection(db, "stepometer"));
+      const querySnapshot_abnormal_left = await getDocs(
+        collection(db, "stepometer_abnormal_left")
+      );
       const userData = [];
 
       querySnapshot.forEach((doc) => {
         userData.push({ id: doc.id, data: doc.data() });
       });
+      querySnapshot_abnormal_left.forEach((doc) => {
+        userData.push({ id: doc.id, data: doc.data() });
+      });
+
       setStepometer(userData);
       return userData;
     }
@@ -144,7 +113,7 @@ export default function Home() {
   };
   const Heading = ({ children }) => {
     return (
-      <h2 className="border-b-2 p-2">
+      <h2 className="border-b-2 p-2 flex-1">
         <span>{children}</span>
       </h2>
     );
