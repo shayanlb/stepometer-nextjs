@@ -12,7 +12,7 @@ async function sendDataToFirestore() {
   let delay_in_seconds = 10;
   let delay_in_days = 12; //10,11,12
 
-  let number_of_entries_for_firestore_normal = 120;
+  let number_of_entries_for_firestore_normal = 0;
   let firestore_collection_name_normal = "stepometer_normal";
   let pressure_left_normal = 45;
   let pressure_right_normal = 50;
