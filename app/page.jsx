@@ -12,7 +12,7 @@ import {
   serverTimestamp,
 } from "firebase/firestore";
 import LineChart from "../components/LineChart";
-import generateStepometerData from "../components/generateStepometerData";
+import sendDataToFirestore from "../components/sendDataToFirestore";
 
 export default function Home() {
   const [stepometer, setStepometer] = useState(null);
@@ -22,28 +22,27 @@ export default function Home() {
 
   useEffect(() => {
     async function GetStepometer() {
-      // for (let index = 0; index < 50; index++) {
-      //   let time_difference = { seconds: 10 + index * 10, day: 12 }; // 10, 11, 12
-      //   let data = generateStepometerData(0, 10, 26, 34, time_difference);
-      //   const docRef = await addDoc(
-      //     collection(db, "stepometer_abnormal_left"),
-      //     data
-      //   );
-      // }
-
-      const querySnapshot = await getDocs(collection(db, "stepometer"));
-      const querySnapshot_abnormal_left = await getDocs(
-        collection(db, "stepometer_abnormal_left")
+      let sendData = await sendDataToFirestore();
+      const querySnapshot = await getDocs(
+        collection(db, sendData.firestore_collection_name_normal)
+      );
+      const querySnapshot_left = await getDocs(
+        collection(db, sendData.firestore_collection_name_left)
+      );
+      const querySnapshot_right = await getDocs(
+        collection(db, sendData.firestore_collection_name_right)
       );
       const userData = [];
 
       querySnapshot.forEach((doc) => {
         userData.push({ id: doc.id, data: doc.data() });
       });
-      querySnapshot_abnormal_left.forEach((doc) => {
+      querySnapshot_left.forEach((doc) => {
         userData.push({ id: doc.id, data: doc.data() });
       });
-
+      querySnapshot_right.forEach((doc) => {
+        userData.push({ id: doc.id, data: doc.data() });
+      });
       setStepometer(userData);
       return userData;
     }
